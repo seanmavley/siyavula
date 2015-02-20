@@ -14,14 +14,17 @@ def homepage(request):
         return render(request, 'index.html')
     else:
         if request.method == 'POST':
+            # grab the value from name 'url' in form
             url = request.POST['url']
             http = httplib2.Http()
             response = ''
             status_msgs = ''
+
+            # what if can't access Wikipedia
             try:
                 status, response = http.request(url)
             except:
-                status_msgs = 'Link to Wikipedia is down'
+                status_msgs = True
             extract = BeautifulSoup(response)
             # find class in Wikipedia page
             toc = extract.find_all(attrs={'class': 'mw-headline'})
@@ -37,7 +40,8 @@ def homepage(request):
                             'query': url,
                             'status': status_msgs,
                             'h2s': toc,
-                            'searched': True, # the cue, not to display some things
-                                              # things in view at some points
+                            # the cue, not to display some things
+                            # things in view at some points
+                            'searched': True
                             },
                           )
