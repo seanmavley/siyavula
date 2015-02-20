@@ -1,0 +1,134 @@
+<!-- google.com/+Nkansahrexford 
+     khophi.co -->
+{% load static %}
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Siya - Home</title>
+    <link rel="stylesheet" href="{% static 'css/foundation.css'%}" />
+    <script src="{% static 'js/vendor/modernizr.js' %}"></script>
+  </head>
+  <body>
+
+<!-- The header bar, responsive to scroll movements.
+Hides on scroll down, shows on scroll up -->
+<div class="fixed nav-down" id="myHeader">
+  <nav class="top-bar" data-topbar role="navigation">
+  <ul class="title-area">
+    <li class="name">
+      <h1><a href="/">Siya</a></h1>
+    </li>
+    <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+  </ul>
+
+  <section class="top-bar-section">
+    <ul class="left">
+      <li><a href="http://github.com/seanmavley/siyavula" target="new">Source Code</a></li>
+    </ul>
+  </section>
+  </nav> 
+</div>
+<!-- End Header Bar -->
+    
+<!-- Main body begins here -->
+    <div class="row">
+      <div class="small-12 large-8 large-centered columns">
+        <!-- Welcome Message -->
+        <div class="panel text-center">
+          Welcome! This page is designed to help you know the table of contents of a Wikipedia article. If an article doesn't have a Table of Contents, you'll be informed accordingly. Enjoy
+        </div>
+        <div style="margin-top:20px;">
+          <form action="." method="POST">
+          {% csrf_token %}
+            <div class="row">
+              <div class="small-12 columns">
+                <label>Enter Wikipedia URL</label>
+                <input type="url" name="url" id="url" placeholder="e.g. http://en.wikipedia.org/wiki/Thomas_Mensah" required />
+              </div>
+            </div>
+            <div class="row">
+              <div class="small-12 columns">
+              <center>
+                  <input type="submit" class="button success" value="Let's do this!">
+                  <input type="reset" class="button tiny secondary" value="Clear">
+              </center>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Only show content in this block if only 'searched' template
+    context is true. Thus, won't show without user entering data and sending -->
+    {% if searched %}
+    <hr>
+    <div class="row">
+      <div class="small-12 large-12 columns large-centered">
+        <div class="small-12 large-12 columns large-centered">
+          <div class="small-12 large-8 columns large-centered">
+            <!-- if there aren't any header level two in template context, show nothing
+            Just 'if' logics from here. -->
+            {% if not h2s and searched  %}
+              {% if status %}
+              <div data-alert class="alert-box info radius">
+                The resource, <a href="{{query}}" target="new">{{query}}</a>, you requested for, can't be reached currently. Make sure you have internet connection and try again!
+                <a href="#" class="close">&times;</a>
+              </div>
+              {% else %}
+              <div data-alert class="alert-box alert radius">
+                Your requested Wikipedia Article Doesn't seem to have a Table of content. You requested for the page, <a href="{{query}}" target="new">{{query}}</a>
+                <a href="#" class="close">&times;</a>
+              </div>   
+              {% endif %}   
+            {% endif %}
+          </div>
+          {% if extract %}
+            <h3 class="text-center">See!</h3>
+            <h6 class="text-center">The Table of Contents from the article, {{query}}</h6>
+            {% else %}
+            <h3 class="text-center">Table of Contents</h3>
+            <h6 class="text-center">The Table of Contents from the article you input above will show below</h6>        
+          {% endif %}
+        </div>
+        <div class="small-6 large-6 columns panel">
+        {% if extract %}
+        <h5 class="text-center">Scraped HTML</h5>
+          <ul>
+            {% for i in extract %}
+                <li>{{ i }}</li>
+            {% endfor %}
+          </ul>  
+        {% else %}
+          <div class="text-center">
+            Nothing to display yet.
+          </div>
+        {% endif %}      
+        </div>
+        <div class="small-6 large-6 columns panel">
+          {% if h2s %}
+            <h5 class="text-center">Raw HTML</h5>
+            {{ h2s }}
+          {% else %}
+            <div class="text-center">
+              Nothing to display yet.
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    
+    <!-- footer stuffs for foundation framework -->
+    <script src="{% static 'js/vendor/jquery.js'%}"></script>
+    <script src="{% static 'js/foundation/foundation.js'%}"></script>
+    <script src="{% static 'js/foundation/foundation.topbar.js'%}"></script>
+    <script src="{% static 'js/foundation/foundation.alert.js'%}"></script>
+    <!-- Kicks the whole foundation show into action -->
+    <script>
+      $(document).foundation();
+    </script>
+  </body>
+</html>
